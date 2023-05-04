@@ -41,10 +41,13 @@ def get_data(normalize, binary_label) -> tuple[pd.DataFrame, Samples, Samples, S
     df = df.iloc[:, 2:]
 
     data = np.array(df)
+    x = data[:, :-1]
+
     if normalize:
         # normalize the data
-        data = (data - data.mean(axis=0)) / data.std(axis=0)
-    x = data[:, :-1]
+        # data = (data - data.mean(axis=0)) / data.std(axis=0)
+        x = (x - x.mean(axis=0)) / x.std(axis=0)
+    # x = data[:, :-1]
     # converting the last column to boolean
     if binary_label:
         assert not normalize
@@ -88,6 +91,7 @@ def analyze_pred(pred, truth):
     # Print the mean squared error and R-squared score
     mse = mean_squared_error(truth, pred)
     print("Mean Squared Error:", mse)
+    print("Root Mean Squared Error:", math.sqrt(mse))
     print("R-squared Score:", r2_score(truth, pred))
     # print(np.mean(pred))
     # print(np.mean(truth))
@@ -121,19 +125,25 @@ def optimize_hyperparameters(
     classification,
 ):
     best_hyperparameters = None
-    best_accuracy = -1
+    best_accuracy = -1 if classification else float("inf")
     hyperparameters = []
     accuracies = []
     for p in param_generator:
         print("Trying hyperparameters:", p)
         model = get_model(p)
         accuracy = test_model(model, train, val, classification)
-        print("Accuracy:", accuracy)
+        print("Value:", accuracy)
         hyperparameters.append(p)
         accuracies.append(accuracy)
-        if accuracy > best_accuracy:
-            best_hyperparameters = p
-            best_accuracy = accuracy
+        if classification:
+            if accuracy > best_accuracy:
+                best_hyperparameters = p
+                best_accuracy = accuracy
+        else:
+            if accuracy < best_accuracy:
+                best_hyperparameters = p
+                best_accuracy = accuracy
+
     print("Best hyperparameters:", best_hyperparameters)
-    print("Best accuracy:", best_accuracy)
+    print("Best value:", best_accuracy)
     return best_hyperparameters, hyperparameters, accuracies
