@@ -50,7 +50,7 @@ def get_data(normalize, binary_label) -> tuple[pd.DataFrame, Samples, Samples, S
     # x = data[:, :-1]
     # converting the last column to boolean
     if binary_label:
-        assert not normalize
+        # assert not normalize
         y = np.array([elem >= 1400 for elem in data[:, -1]])
     else:
         y = np.array(data[:, -1])
