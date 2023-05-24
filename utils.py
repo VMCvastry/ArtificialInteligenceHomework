@@ -89,21 +89,15 @@ def test_model(model, train: Samples, test: Samples, classification):
 
 def analyze_pred(pred, truth):
     # Print the mean squared error and R-squared score
-    mse = mean_squared_error(truth, pred)
-    print("Mean Squared Error:", mse)
-    print("Root Mean Squared Error:", math.sqrt(mse))
-    print("R-squared Score:", r2_score(truth, pred))
-    # print(np.mean(pred))
-    # print(np.mean(truth))
-    # bin_pred = pred >= 0
-    # bin_truth = truth >= 0
-    # print("Accuracy:", accuracy_score(bin_truth, bin_pred))
-    return mse
+    rmse = mean_squared_error(truth, pred, squared=False)
+    # print("Mean Squared Error:", mse)
+    print("Root Mean Squared Error:", rmse)
+    # print("R-squared Score:", r2_score(truth, pred))
+    return rmse
 
 
 def analyze_pred_bin(pred, truth):
     print("Binary cross entropy:", log_loss(truth, pred))
-    print("Predicted mean:", np.mean(pred), "Actual mean:", np.mean(truth))
     accuracy = accuracy_score(truth, pred)
     print("Accuracy:", accuracy)
     return accuracy
