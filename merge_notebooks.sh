@@ -1,1 +1,1 @@
-nbmerge F*.ipynb >Merged.ipynb
+nbmerge Fondamenti_di_IA_homework_2023_decision_tree.ipynb Fondamenti_di_IA_homework_2023_linear_regression.ipynb Fondamenti_di_IA_homework_2023_linear_classification.ipynb Fondamenti_di_IA_homework_2023_k_nearest.ipynb Fondamenti_di_IA_homework_2023_NN.ipynb>Merged.ipynb
