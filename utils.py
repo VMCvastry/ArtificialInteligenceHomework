@@ -103,12 +103,12 @@ def plot_2d(x, y, x_label, y_label):
 
 # Helper function to optimize hyperparameters for any model
 def optimize_hyperparameters(
-        get_model: callable,
-        param_generator,
-        train: Samples,
-        test: Samples,
-        val: Samples,
-        classification,
+    get_model: callable,
+    param_generator,
+    train: Samples,
+    test: Samples,
+    val: Samples,
+    classification,
 ):
     best_hyperparameters = None
     best_value = -1 if classification else float("inf")
