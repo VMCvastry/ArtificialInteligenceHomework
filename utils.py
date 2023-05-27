@@ -39,27 +39,19 @@ def get_data(normalize, binary_label) -> tuple[pd.DataFrame, Samples, Samples, S
     df = pd.read_csv("OnlineNewsPopularity/OnlineNewsPopularity.csv")
     df = df.rename(columns=lambda x: x.strip())
     df = df.iloc[:, 2:]
-
     data = np.array(df)
     x = data[:, :-1]
 
     if normalize:
-        # normalize the data
-        # data = (data - data.mean(axis=0)) / data.std(axis=0)
         x = (x - x.mean(axis=0)) / x.std(axis=0)
-    # x = data[:, :-1]
-    # converting the last column to boolean
+
     if binary_label:
-        # assert not normalize
         y = np.array([elem >= 1400 for elem in data[:, -1]])
     else:
         y = np.array(data[:, -1])
     train_x, test_x, train_y, test_y = train_test_split(
         x, y, test_size=0.2, random_state=1
     )
-    # val_x, test_x, val_y, test_y = train_test_split(
-    #     test_x, test_y, test_size=0.5, random_state=1
-    # )
     train_x, val_x, train_y, val_y = train_test_split(
         train_x, train_y, test_size=0.2, random_state=1
     )
@@ -88,7 +80,6 @@ def test_model(model, train: Samples, test: Samples, classification):
 
 
 def analyze_pred(pred, truth):
-    # Print the mean squared error and R-squared score
     rmse = mean_squared_error(truth, pred, squared=False)
     # print("Mean Squared Error:", mse)
     print("Root Mean Squared Error:", rmse)
@@ -97,7 +88,7 @@ def analyze_pred(pred, truth):
 
 
 def analyze_pred_bin(pred, truth):
-    print("Binary cross entropy:", log_loss(truth, pred))
+    # print("Binary cross entropy:", log_loss(truth, pred))
     accuracy = accuracy_score(truth, pred)
     print("Accuracy:", accuracy)
     return accuracy
@@ -110,16 +101,17 @@ def plot_2d(x, y, x_label, y_label):
     plt.show()
 
 
+# Helper function to optimize hyperparameters for any model
 def optimize_hyperparameters(
-    get_model: callable,
-    param_generator,
-    train: Samples,
-    test: Samples,
-    val: Samples,
-    classification,
+        get_model: callable,
+        param_generator,
+        train: Samples,
+        test: Samples,
+        val: Samples,
+        classification,
 ):
     best_hyperparameters = None
-    best_accuracy = -1 if classification else float("inf")
+    best_value = -1 if classification else float("inf")
     hyperparameters = []
     accuracies = []
     for p in param_generator:
@@ -130,14 +122,14 @@ def optimize_hyperparameters(
         hyperparameters.append(p)
         accuracies.append(accuracy)
         if classification:
-            if accuracy > best_accuracy:
+            if accuracy > best_value:
                 best_hyperparameters = p
-                best_accuracy = accuracy
+                best_value = accuracy
         else:
-            if accuracy < best_accuracy:
+            if accuracy < best_value:
                 best_hyperparameters = p
-                best_accuracy = accuracy
+                best_value = accuracy
 
     print("Best hyperparameters:", best_hyperparameters)
-    print("Best value:", best_accuracy)
+    print("Best value:", best_value)
     return best_hyperparameters, hyperparameters, accuracies
